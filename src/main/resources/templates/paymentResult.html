@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resultado del Pago</title>
+    <!-- Estilos de Bootstrap -->
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Estilos personalizados -->
+    <style>
+        body {
+            background-color: #f8f9fa;
+            font-family: Arial, sans-serif;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 100px auto;
+            background-color: #fff;
+            border-radius: 8px;
+            padding: 40px;
+            box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        h1 {
+            margin-bottom: 40px;
+            color: #343a40;
+        }
+
+        .transaction-details {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            margin-top: 20px;
+            text-align: left;
+        }
+
+        .font-weight-bold {
+            font-weight: bold;
+        }
+
+        .payu-footer {
+            background-color: black;
+            color: #fff;
+            padding: 20px;
+            text-align: center;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            left: 0;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ62l7ZE2RXol6e6d4TgfeFD8zXr6-qkR0x9_PXdCPalg&s"
+            alt="Descripción de la imagen">
+        <h1>Resultado del Pago</h1>
+
+        <div class="transaction-details">
+            <p class="lead">Detalles de la transacción:</p>
+            <!-- Detalles de la transacción -->
+            <div class="mb-3">
+                <p class="font-weight-bold">Order ID:</p>
+                <p id="orderId" class="mb-0"></p>
+            </div>
+            <div class="mb-3">
+                <p class="font-weight-bold">Transaction ID:</p>
+                <p id="transactionId" class="mb-0"></p>
+            </div>
+            <div class="mb-3">
+                <p class="font-weight-bold">Valor Total:</p>
+                <p id="total" class="mb-0">$ <span id="totalAmount"></span></p>
+            </div>
+            <!-- Fecha y hora de la transacción -->
+            <div class="mb-3">
+                <p class="font-weight-bold">Fecha y hora de la transacción:</p>
+                <p id="transactionDateTime" class="mb-0"></p>
+            </div>
+        </div>
+    </div>
+
+    <div class="payu-footer">
+        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTy-kokfbC84eT7sU7NmbnNHYrSC1Uqhdu4WoVxYr35wQ&s" alt="PayU" style="height: 40px; color: #f8f9fa;">
+    	PayU Todos los derechos reservados
+    </div>
+
+    <!-- Scripts de Bootstrap y jQuery -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <script>
+        // Obtener los parámetros orderId, transactionId y total de la URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const orderId = urlParams.get('orderId');
+        const transactionId = urlParams.get('transactionId');
+        const total = urlParams.get('total');
+
+        // Mostrar los valores en el HTML
+        document.getElementById('orderId').textContent = orderId;
+        document.getElementById('transactionId').textContent = transactionId;
+        document.getElementById('totalAmount').textContent = total;
+
+        // Obtener la fecha y hora actual
+        const currentDateTime = new Date();
+
+        // Formatear la fecha y hora en un formato legible
+        const formattedDateTime = currentDateTime.toLocaleString();
+
+        // Mostrar la fecha y hora en el elemento HTML
+        document.getElementById('transactionDateTime').textContent = formattedDateTime;
+
+    </script>
+
+
+</body>
+
+</html>

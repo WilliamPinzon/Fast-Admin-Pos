@@ -1,0 +1,109 @@
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+
+<head>
+	<title>Editar Contribuyente</title>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+		integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+
+	<!-- Optional theme -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css"
+		integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+</head>
+
+<body>
+	<nav class="navbar navbar-inverse navbar-fixed-top">
+		<div class="container">
+			<div class="navbar-header">
+				<a class="navbar-brand btn btn-success" href="#" th:href="@{/Contribuyentes}">Contribuyentes Registrados
+					<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+						class="bi bi-arrow-counterclockwise" viewBox="0 0 16 16">
+						<path fill-rule="evenodd" d="M8 3a5 5 0 1 1-4.546 2.914.5.5 0 0 0-.908-.417A6 6 0 1 0 8 2z" />
+						<path
+							d="M8 4.466V.534a.25.25 0 0 0-.41-.192L5.23 2.308a.25.25 0 0 0 0 .384l2.36 1.966A.25.25 0 0 0 8 4.466" />
+					</svg>
+				</a>
+			</div>
+		</div>
+	</nav>
+	<br>
+	<div class="alert alert-success" th:if="${param.exito}" role="alert">
+		<p>
+			Contribuyente Editado con Éxito!.
+		</p>
+	</div>
+		<div class="alert alert-danger" th:if="${param.error}" role="alert" style="z-index: 100;">
+		<p>
+			El Vehiculo no se encuentra registrado!.
+		</p>
+	</div>
+	<div class="container">
+		<div class="container">
+			<div class="row">
+				<div class="col-md-6 col-md-offset-3">
+
+					<span class="input-group-text d-flex justify-content-between align-items-center"
+						style="font-size: 20px;">
+						<span>Datos del Contribuyente: &nbsp;<span></span></span>
+					</span>
+					<form th:action="@{/editarContribuyente}" method="post" th:object="${contribuyente}">
+						<input id="id" type="text" class="form-control" th:field="*{id}" hidden required autofocus="autofocus">
+						<div class="form-group">
+							<label class="control-label" for="nombre">Nombre: </label> 
+							<input id="nombre" type="text" class="form-control" th:field="*{nombre}" required autofocus="autofocus">
+						</div>
+						<div class="form-group">
+							<label class="control-label" for="tipoDocumento">Tipo de Documento : </label>
+							<select id="tipoDocumento" class="form-control form-select" th:field="*{tipoDocumento}" required
+								autofocus="autofocus">
+								<option value="Cédula">Cédula de Ciudadanía</option>
+								<option value="Pasaporte">Pasaporte</option>
+								<option value="Tarjeta">Tarjeta de Residencia</option>
+							</select>
+						</div>
+						<div class="form-group">
+							<label class="control-label" for="documento">Documento: </label> <input id="documento"
+								type="number" class="form-control" th:field="*{documento}" min="1" max="9999999999" required
+								autofocus="autofocus">
+						</div>
+						<div class="form-group">
+							<label class="control-label" for="telefono">Teléfono : </label> <input id="telefono"
+								type="number" class="form-control" th:field="*{telefono}" min="1111111111" max="4444444444" required
+								autofocus="autofocus">
+						</div>
+						<div class="form-group">
+							<label class="control-label" for="direccion">Dirección: </label> <input id="direccion"
+								type="text" class="form-control" th:field="*{direccion}" required autofocus="autofocus">
+						</div>
+						<div class="form-group">
+							<label class="control-label" for="correo">Correo : </label> <input id="correo" type="email"
+								class="form-control" th:field="*{correo}" required autofocus="autofocus">
+						</div>
+
+						<br>
+
+						<div class="form-group">
+							<button type="submit" class="btn btn-success">Guardar Cambios
+								<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+									class="bi bi-floppy-fill" viewBox="0 0 16 16">
+									<path
+										d="M0 1.5A1.5 1.5 0 0 1 1.5 0H3v5.5A1.5 1.5 0 0 0 4.5 7h7A1.5 1.5 0 0 0 13 5.5V0h.086a1.5 1.5 0 0 1 1.06.44l1.415 1.414A1.5 1.5 0 0 1 16 2.914V14.5a1.5 1.5 0 0 1-1.5 1.5H14v-5.5A1.5 1.5 0 0 0 12.5 9h-9A1.5 1.5 0 0 0 2 10.5V16h-.5A1.5 1.5 0 0 1 0 14.5z" />
+									<path
+										d="M3 16h10v-5.5a.5.5 0 0 0-.5-.5h-9a.5.5 0 0 0-.5.5zm9-16H4v5.5a.5.5 0 0 0 .5.5h7a.5.5 0 0 0 .5-.5zM9 1h2v4H9z" />
+								</svg>
+						</div>
+					</form>
+
+				</div>
+			</div>
+
+			<br> <br>
+
+		</div>
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
+			integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+			crossorigin="anonymous"></script>
+</body>
+
+</html>

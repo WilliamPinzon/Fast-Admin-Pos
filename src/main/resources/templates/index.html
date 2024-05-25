@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+
+<head>
+	<title>Productos</title>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+		integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css"
+		integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.0.0/crypto-js.min.js"></script>
+</head>
+
+<body>
+	<nav class="navbar navbar-inverse navbar-fixed-top">
+		<div class="container">
+			<div class="navbar-header">
+				<!-- Agregar botón "Ver carrito" después de la tabla de productos -->
+				<span class="navbar-text" style="color: white;">Bienvenido: <span
+						th:text="${nombreUsuario}"></span></span>
+			</div>
+			<div class="navbar-header">
+				<!-- Agregar botón "Ver carrito" después de la tabla de productos -->
+				<button id="verCarritoBtn" class="btn btn-info">Ver carrito
+					<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+						class="bi bi-cart-fill" viewBox="0 0 16 16">
+						<path
+							d="M0 1.5A.5.5 0 0 1 .5 1H2a.5.5 0 0 1 .485.379L2.89 3H14.5a.5.5 0 0 1 .491.592l-1.5 8A.5.5 0 0 1 13 12H4a.5.5 0 0 1-.491-.408L2.01 3.607 1.61 2H.5a.5.5 0 0 1-.5-.5M5 12a2 2 0 1 0 0 4 2 2 0 0 0 0-4m7 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4m-7 1a1 1 0 1 1 0 2 1 1 0 0 1 0-2m7 0a1 1 0 1 1 0 2 1 1 0 0 1 0-2" />
+					</svg>
+				</button>
+			</div>
+			<ul class="nav navbar-nav">
+				<li sec:authorize="isAuthenticated()">
+					<button type="button" class="btn btn-primary"
+						th:onclick="'window.location.href = \'' + @{/logout} + '\''">Cerrar sesión
+						<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+							class="bi bi-door-open-fill" viewBox="0 0 16 16">
+							<path
+								d="M1.5 15a.5.5 0 0 0 0 1h13a.5.5 0 0 0 0-1H13V2.5A1.5 1.5 0 0 0 11.5 1H11V.5a.5.5 0 0 0-.57-.495l-7 1A.5.5 0 0 0 3 1.5V15zM11 2h.5a.5.5 0 0 1 .5.5V15h-1zm-2.5 8c-.276 0-.5-.448-.5-1s.224-1 .5-1 .5.448.5 1-.224 1-.5 1" />
+						</svg>
+					</button>
+				</li>
+			</ul>
+		</div>
+	</nav>
+
+
+	<!-- Modal -->
+	<div class="modal fade" id="carritoModal" tabindex="-1" aria-labelledby="carritoModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="carritoModalLabel">Carrito de compras</h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				</div>
+				<div class="modal-body" id="carritoModalContent">
+					<!-- Aquí se mostrará el contenido del carrito -->
+				</div>
+				<div class="modal-footer">
+					<button id="pagarBtn" type="button" class="btn btn-info">Pagar
+						<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+							class="bi bi-paypal" viewBox="0 0 16 16">
+							<path
+								d="M14.06 3.713c.12-1.071-.093-1.832-.702-2.526C12.628.356 11.312 0 9.626 0H4.734a.7.7 0 0 0-.691.59L2.005 13.509a.42.42 0 0 0 .415.486h2.756l-.202 1.28a.628.628 0 0 0 .62.726H8.14c.429 0 .793-.31.862-.731l.025-.13.48-3.043.03-.164.001-.007a.35.35 0 0 1 .348-.297h.38c1.266 0 2.425-.256 3.345-.91q.57-.403.993-1.005a4.94 4.94 0 0 0 .88-2.195c.242-1.246.13-2.356-.57-3.154a2.7 2.7 0 0 0-.76-.59l-.094-.061ZM6.543 8.82a.7.7 0 0 1 .321-.079H8.3c2.82 0 5.027-1.144 5.672-4.456l.003-.016q.326.186.548.438c.546.623.679 1.535.45 2.71-.272 1.397-.866 2.307-1.663 2.874-.802.57-1.842.815-3.043.815h-.38a.87.87 0 0 0-.863.734l-.03.164-.48 3.043-.024.13-.001.004a.35.35 0 0 1-.348.296H5.595a.106.106 0 0 1-.105-.123l.208-1.32z" />
+						</svg>
+					</button>
+					<!-- Agregar el botón "Ver factura" -->
+					<button id="verFacturaBtn" type="button" class="btn btn-primary">Ver factura
+						<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+							class="bi bi-receipt-cutoff" viewBox="0 0 16 16">
+							<path
+								d="M3 4.5a.5.5 0 0 1 .5-.5h6a.5.5 0 1 1 0 1h-6a.5.5 0 0 1-.5-.5m0 2a.5.5 0 0 1 .5-.5h6a.5.5 0 1 1 0 1h-6a.5.5 0 0 1-.5-.5m0 2a.5.5 0 0 1 .5-.5h6a.5.5 0 1 1 0 1h-6a.5.5 0 0 1-.5-.5m0 2a.5.5 0 0 1 .5-.5h6a.5.5 0 0 1 0 1h-6a.5.5 0 0 1-.5-.5m0 2a.5.5 0 0 1 .5-.5h6a.5.5 0 0 1 0 1h-6a.5.5 0 0 1-.5-.5M11.5 4a.5.5 0 0 0 0 1h1a.5.5 0 0 0 0-1zm0 2a.5.5 0 0 0 0 1h1a.5.5 0 0 0 0-1zm0 2a.5.5 0 0 0 0 1h1a.5.5 0 0 0 0-1zm0 2a.5.5 0 0 0 0 1h1a.5.5 0 0 0 0-1zm0 2a.5.5 0 0 0 0 1h1a.5.5 0 0 0 0-1z" />
+							<path
+								d="M2.354.646a.5.5 0 0 0-.801.13l-.5 1A.5.5 0 0 0 1 2v13H.5a.5.5 0 0 0 0 1h15a.5.5 0 0 0 0-1H15V2a.5.5 0 0 0-.053-.224l-.5-1a.5.5 0 0 0-.8-.13L13 1.293l-.646-.647a.5.5 0 0 0-.708 0L11 1.293l-.646-.647a.5.5 0 0 0-.708 0L9 1.293 8.354.646a.5.5 0 0 0-.708 0L7 1.293 6.354.646a.5.5 0 0 0-.708 0L5 1.293 4.354.646a.5.5 0 0 0-.708 0L3 1.293zm-.217 1.198.51.51a.5.5 0 0 0 .707 0L4 1.707l.646.647a.5.5 0 0 0 .708 0L6 1.707l.646.647a.5.5 0 0 0 .708 0L8 1.707l.646.647a.5.5 0 0 0 .708 0L10 1.707l.646.647a.5.5 0 0 0 .708 0L12 1.707l.646.647a.5.5 0 0 0 .708 0l.509-.51.137.274V15H2V2.118z" />
+						</svg>
+					</button>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-danger" id="borrarCarritoBtn">Borrar contenido
+						<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+							class="bi bi-x-circle-fill" viewBox="0 0 16 16">
+							<path
+								d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0M5.354 4.646a.5.5 0 1 0-.708.708L7.293 8l-2.647 2.646a.5.5 0 0 0 .708.708L8 8.707l2.646 2.647a.5.5 0 0 0 .708-.708L8.707 8l2.647-2.646a.5.5 0 0 0-.708-.708L8 7.293z" />
+						</svg>
+					</button>
+					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar
+						<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+							class="bi bi-x" viewBox="0 0 16 16">
+							<path
+								d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708" />
+						</svg>
+					</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="modal fade" id="agregarModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="exampleModalLabel">Producto Agregado</h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				</div>
+				<div class="modal-body">
+					El producto ha sido agregado al carrito correctamente.
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar
+						<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+							class="bi bi-x" viewBox="0 0 16 16">
+							<path
+								d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708" />
+						</svg>
+					</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+		<!-- Modal para la factura -->
+	<div class="modal fade" id="facturaModal" tabindex="-1" aria-labelledby="facturaModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="facturaModalLabel">Factura</h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				</div>
+				<div class="modal-body">
+					<!-- Nombre del cliente -->
+					<p>Factura a nombre de: <span th:text="${nombreUsuario}"></span></p>
+					<p>Fecha: <span id="fechaFactura"></span></p>
+					<!-- Aquí se mostrará la factura -->
+					<div id="facturaModalContent">
+						<!-- Contenido de la factura -->
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar
+						<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+							class="bi bi-x" viewBox="0 0 16 16">
+							<path
+								d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708" />
+						</svg>
+					</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<script>
+		// Agregar el evento de clic al botón "Ver factura"
+		$(document).on('click', '#verFacturaBtn', function () {
+			// Obtener la fecha y la hora actual
+			var fechaHoraActual = new Date();
+			var fecha = fechaHoraActual.toLocaleDateString();
+			var hora = fechaHoraActual.toLocaleTimeString();
+
+			// Mostrar la fecha y la hora en el modal de factura
+			$('#fechaFactura').text(fecha + ', ' + hora);
+
+			// Obtener el nombre del cliente
+			var nombreCliente = $('#nombreUsuario').text();
+			// Mostrar el nombre del cliente en el modal de factura
+			$('#nombreCliente').text(nombreCliente);
+
+			// Obtener el contenido del carrito
+			var contenidoCarrito = $('#carritoModalContent').html();
+			// Insertar el contenido del carrito en el modal de factura
+			$('#facturaModalContent').html(contenidoCarrito);
+
+			// Mostrar el modal de factura
+			$('#facturaModal').modal('show');
+		});
+
+
+	</script>
+
+
+	<br>
+	<div class="alert alert-success" th:if="${param.exito}" role="alert">
+		<p>Producto Editado con Éxito!</p>
+	</div>
+	<div class="alert alert-success" th:if="${param.delete}" role="alert">
+		<p>Producto Eliminado con Éxito!</p>
+	</div>
+	<div class="alert alert-danger" th:if="${param.error}" role="alert">
+		<p>No se encontró Contribuyente!</p>
+	</div>
+	<div class="alert alert-success" th:if="${param.addedToCart}" role="alert">
+		<p>Producto añadido al carrito con éxito!</p>
+	</div>
+	<div class="alert alert-danger" th:if="${param.addToCartError}" role="alert">
+		<p>Error al añadir el producto al carrito!</p>
+	</div>
+	<div class="container">
+
+
+		<span class="input-group-text d-flex justify-content-between align-items-center" style="font-size: 20px;">
+			<span>Listado de Productos: &nbsp;<span></span></span>
+		</span>
+		<br>
+		<table class="table table-striped table-bordered">
+			<thead class="table-dark">
+				<tr>
+					<th>Nombre</th>
+					<th>Tipo de Producto</th>
+					<th>Valor Unitario</th>
+					<th>Stock Actual</th>
+					<th>Agregar</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr th:each="dato : ${productos}">
+					<td th:text="${dato.nombre}">Nombre</td>
+					<td th:text="${dato.tipoProducto}">Tipo de Producto</td>
+					<td th:text="${dato.valorUnitario}">Valor Unitario</td>
+					<td th:text="${dato.stock}">Stock</td>
+					<td>
+						<button class="btn btn-success agregar-al-carrito-btn"
+							onclick="agregarAlCarrito('${dato.nombre}', '${dato.valorUnitario}')">
+							Agregar al carrito
+							<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+								class="bi bi-plus-circle-fill" viewBox="0 0 16 16">
+								<path
+									d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0M8.5 4.5a.5.5 0 0 0-1 0v3h-3a.5.5 0 0 0 0 1h3v3a.5.5 0 0 0 1 0v-3h3a.5.5 0 0 0 0-1h-3z" />
+						</button>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+		integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+		crossorigin="anonymous"></script>
+
+	<script>
+		// Función para agregar un producto al carrito
+		function agregarAlCarrito(button) {
+			var row = button.closest('tr'); // Obtener la fila más cercana al botón
+			var nombre = row.querySelector('td:nth-child(1)').textContent; // Obtener el texto de la tercera celda (Nombre)
+			var valorUnitario = row.querySelector('td:nth-child(3)').textContent; // Obtener el texto de la quinta celda (Valor Unitario)
+			// Crear un objeto representando el producto
+			var producto = {
+				nombre: nombre,
+				valorUnitario: valorUnitario
+			};
+			console.log("Producto agregado al carrito:", producto); // Agregar este registro en la consola
+			// Obtener el carrito desde el almacenamiento local o crear uno vacío
+			var carrito = JSON.parse(localStorage.getItem('carrito')) || [];
+			// Agregar el producto al carrito
+			carrito.push(producto);
+			// Guardar el carrito actualizado en el almacenamiento local
+			localStorage.setItem('carrito', JSON.stringify(carrito));
+			// Mostrar mensaje de éxito
+			$('#agregarModal').modal('show');
+		}
+
+		let totalCarrito = 0;
+
+		function verCarrito() {
+			var carrito = JSON.parse(localStorage.getItem('carrito')) || [];
+			var sumaValores = 0;
+			var modalContent = '<table class="table">';
+			modalContent += '<thead><tr><th>Producto</th><th>Valor Unitario</th></tr></thead>';
+			modalContent += '<tbody>';
+			carrito.forEach(function (producto) {
+				modalContent += '<tr>';
+				modalContent += '<td><i class="bi bi-cart3"></i> ' + producto.nombre + '</td>';
+				modalContent += '<td>$ ' + producto.valorUnitario + '</td>';
+				modalContent += '</tr>';
+				sumaValores += parseFloat(producto.valorUnitario);
+			});
+			modalContent += '</tbody>';
+			modalContent += '<tfoot><tr><td><strong>Total:</strong></td><td>$ ' + sumaValores.toFixed(2) + '</td></tr></tfoot>';
+			modalContent += '</table>';
+			$('#carritoModalContent').html(modalContent);
+			$('#carritoModal').modal('show');
+
+			totalCarrito = sumaValores;
+		}
+
+
+
+		// Asignar el evento de clic al botón "Agregar al carrito" en cada fila de la tabla
+		$(document).on('click', '.agregar-al-carrito-btn', function () {
+			agregarAlCarrito(this);
+		});
+
+		// Asignar el evento de clic al botón "Ver carrito"
+		$(document).on('click', '#verCarritoBtn', function () {
+			verCarrito();
+		});
+
+		// Función para borrar el contenido del carrito
+		function borrarContenidoCarrito() {
+			// Limpiar el contenido del carrito en el almacenamiento local
+			localStorage.removeItem('carrito');
+			// Actualizar el contenido del modal
+			$('#carritoModalContent').html('');
+		}
+
+		// Asignar el evento de clic al botón "Borrar contenido"
+		$(document).on('click', '#borrarCarritoBtn', function () {
+			borrarContenidoCarrito();
+		});
+
+
+		function generateSignature(apiKey, merchantId, referenceCode, TX_VALUE, currency) {
+			const text = `${apiKey}~${merchantId}~${referenceCode}~${TX_VALUE}~${currency}`;
+			return CryptoJS.MD5(text).toString();
+		}
+
+		document.getElementById('pagarBtn').addEventListener('click', function () {
+			const apiKey = "4Vj8eK4rloUd272L48hsrarnUA";
+			const merchantId = "508029";
+			const referenceCode = "PRODUCT_TEST_" + new Date().toISOString();
+			const currency = "COP";
+			const TX_VALUE = totalCarrito.toFixed(2);
+			const TAX_RATE = 0.16;  // 16% de IVA
+			let TX_TAX = 0;
+			let TX_TAX_RETURN_BASE = 0;
+
+			if (totalCarrito > 0) {
+				TX_TAX = (totalCarrito * TAX_RATE).toFixed(2);
+				TX_TAX_RETURN_BASE = (totalCarrito - TX_TAX).toFixed(2);
+			}
+
+			const signature = generateSignature(apiKey, merchantId, referenceCode, TX_VALUE, currency);
+
+			const data = {
+				language: "es",
+				command: "SUBMIT_TRANSACTION",
+				merchant: {
+					apiKey: apiKey,
+					apiLogin: "pRRXKOl8ikMmt9u"
+				},
+				transaction: {
+					order: {
+						accountId: "512321",
+						referenceCode: referenceCode,
+						description: "Payment test description",
+						language: "es",
+						signature: signature,
+						notifyUrl: "http://www.payu.com/notify",
+						additionalValues: {
+							TX_VALUE: {
+								value: TX_VALUE,
+								currency: currency
+							},
+							TX_TAX: {
+								value: TX_TAX > 0 ? TX_TAX : 0,
+								currency: currency
+							},
+							TX_TAX_RETURN_BASE: {
+								value: TX_TAX > 0 ? TX_TAX_RETURN_BASE : 0,
+								currency: currency
+							}
+						},
+						buyer: {
+							merchantBuyerId: "1",
+							fullName: "First name and second buyer name",
+							emailAddress: "buyer_test@test.com",
+							contactPhone: "7563126",
+							dniNumber: "123456789",
+							shippingAddress: {
+								street1: "Cr 23 No. 53-50",
+								street2: "5555487",
+								city: "Bogotá",
+								state: "Bogotá D.C.",
+								country: "CO",
+								postalCode: "000000",
+								phone: "7563126"
+							}
+						},
+						shippingAddress: {
+							street1: "Cr 23 No. 53-50",
+							street2: "5555487",
+							city: "Bogotá",
+							state: "Bogotá D.C.",
+							country: "CO",
+							postalCode: "0000000",
+							phone: "7563126"
+						}
+					},
+					payer: {
+						merchantPayerId: "1",
+						fullName: "First name and second payer name",
+						emailAddress: "payer_test@test.com",
+						contactPhone: "7563126",
+						dniNumber: "5415668464654",
+						billingAddress: {
+							street1: "Cr 23 No. 53-50",
+							street2: "125544",
+							city: "Bogotá",
+							state: "Bogotá D.C.",
+							country: "CO",
+							postalCode: "000000",
+							phone: "7563126"
+						}
+					},
+					creditCard: {
+						number: "4037997623271984",
+						securityCode: "321",
+						expirationDate: "2030/12",
+						name: "APPROVED"
+					},
+					extraParameters: {
+						INSTALLMENTS_NUMBER: 1
+					},
+					type: "AUTHORIZATION_AND_CAPTURE",
+					paymentMethod: "VISA",
+					paymentCountry: "CO",
+					deviceSessionId: "vghs6tvkcle931686k1900o6e1",
+					ipAddress: "127.0.0.1",
+					cookie: "pt1t38347bs6jc9ruv2ecpv7o2",
+					userAgent: "Mozilla/5.0 (Windows NT 5.1; rv:18.0) Gecko/20100101 Firefox/18.0",
+					threeDomainSecure: {
+						embedded: false,
+						eci: "01",
+						cavv: "AOvG5rV058/iAAWhssPUAAADFA==",
+						xid: "Nmp3VFdWMlEwZ05pWGN3SGo4TDA=",
+						directoryServerTransactionId: "00000-70000b-5cc9-0000-000000000cb"
+					}
+				},
+				test: true
+			};
+
+			fetch('https://sandbox.api.payulatam.com/payments-api/4.0/service.cgi', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify(data)
+			})
+				.then(response => {
+					return response.text(); // Leer la respuesta como texto en lugar de JSON
+				})
+				.then(xmlText => {
+					console.log(xmlText); // Imprimir el XML devuelto por PayU en la consola
+					try {
+						const parser = new DOMParser();
+						const xmlDoc = parser.parseFromString(xmlText, 'text/xml');
+
+						// Obtener los elementos necesarios del XML
+						const orderId = xmlDoc.querySelector('orderId').textContent;
+						const transactionId = xmlDoc.querySelector('transactionId').textContent;
+
+						// Redirigir al usuario a la URL de pago con los parámetros orderId y transactionId
+						window.location.href = `paymentResult?orderId=${orderId}&transactionId=${transactionId}&total=${totalCarrito}`;
+					} catch (error) {
+						console.error('Error parsing XML:', error);
+						alert('Hubo un error al procesar la respuesta del servidor.');
+					}
+				})
+		});
+	</script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.0.0/crypto-js.min.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,124 @@
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+
+<head>
+	<title>Contribuyentes Registrados</title>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+		integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+
+	<!-- Optional theme -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css"
+		integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+</head>
+
+<body>
+	<nav class="navbar navbar-inverse navbar-fixed-top">
+		<div class="container">
+			<div class="navbar-header">
+				<a class="navbar-brand btn btn-success" href="#" th:href="@{/}">Volver Atrás
+					<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+						class="bi bi-arrow-counterclockwise" viewBox="0 0 16 16">
+						<path fill-rule="evenodd" d="M8 3a5 5 0 1 1-4.546 2.914.5.5 0 0 0-.908-.417A6 6 0 1 0 8 2z" />
+						<path
+							d="M8 4.466V.534a.25.25 0 0 0-.41-.192L5.23 2.308a.25.25 0 0 0 0 .384l2.36 1.966A.25.25 0 0 0 8 4.466" />
+					</svg>
+				</a>
+
+			</div>
+
+		</div>
+	</nav>
+	<br>
+	<div class="alert alert-success" th:if="${param.exito}" role="alert">
+		<p>
+			Contribuyente Editado con Éxito!.
+		</p>
+	</div>
+	<div class="alert alert-success" th:if="${param.delete}" role="alert">
+		<p>
+			Contribuyente Eliminado con Éxito!.
+		</p>
+	</div>
+	<div class="alert alert-danger" th:if="${param.error}" role="alert">
+		<p>
+			No se encontro Contribuyente!.
+		</p>
+	</div>
+	<div class="container">
+		<span class="input-group-text d-flex justify-content-between align-items-center" style="font-size: 20px;">
+			<span>Listado de Contribuyentes: &nbsp;<span></span></span>
+		</span>
+		<br>
+		<div class="row">
+			<div class="col-md-4">
+				<a class="btn btn-primary btn-block" th:href="@{/nuevoContribuyente}">Nuevo Contribuyente
+					<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+						class="bi bi-person-plus-fill" viewBox="0 0 16 16">
+						<path d="M1 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6" />
+						<path fill-rule="evenodd"
+							d="M13.5 5a.5.5 0 0 1 .5.5V7h1.5a.5.5 0 0 1 0 1H14v1.5a.5.5 0 0 1-1 0V8h-1.5a.5.5 0 0 1 0-1H13V5.5a.5.5 0 0 1 .5-.5" />
+					</svg>
+				</a>
+			</div>
+		</div>
+		<br>
+		<table class="table table-striped table-bordered">
+			<thead class="table-dark">
+				<tr>
+					<th>Editar</th>
+					<th>Eliminar</th>
+					<th>Nombre</th>
+					<th>Tipo de Documento</th>
+					<th>Documento</th>
+					<th>Teléfono</th>
+					<th>Dirección</th>
+					<th>Correo</th>
+					<th>Fecha de Creación</th>
+					<th>Fecha de Modificación</th>
+
+				</tr>
+			</thead>
+			<tbody>
+				<tr th:each="dato : ${contribuyentes}">
+					<td>
+						<a th:href="@{/editarContribuyente/{id}(id=${dato.id})}" class="btn btn-info">
+							<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="currentColor"
+								class="bi bi-pencil-square" viewBox="0 0 16 16">
+								<path
+									d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z" />
+								<path fill-rule="evenodd"
+									d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z" />
+							</svg>
+						</a>
+					</td>
+					<td>
+						<a th:href="@{/eliminarContribuyente/{id}(id=${dato.id})}" class="btn btn-danger">
+							<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="currentColor"
+								class="bi bi-trash-fill" viewBox="0 0 16 16">
+								<path
+									d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5M8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5m3 .5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 1 0" />
+							</svg>
+						</a>
+					</td>
+					<td th:text="${dato.nombre}">Nombre</td>
+					<td th:text="${dato.tipoDocumento}">Tipo de Documento</td>
+					<td th:text="${dato.documento}">Documento</td>
+					<td th:text="${dato.telefono}">Telefono</td>
+					<td th:text="${dato.direccion}">Dirrección</td>
+					<td th:text="${dato.correo}">Correo</td>
+					<td th:text="${#temporals.format(dato.fechaDeRegistro, 'yyyy-MM-dd HH:mm:ss')}">
+						Fecha de Registro</td>
+					<td th:text="${#temporals.format(dato.fechaDeModificacion, 'yyyy-MM-dd HH:mm:ss')}">
+						Hora de Modificación</td>
+
+				</tr>
+			</tbody>
+		</table>
+	</div>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
+		integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+		crossorigin="anonymous"></script>
+</body>
+
+</html>
